@@ -69,3 +69,34 @@ def recommend(payload: dict):
             for score, row in top5
         ]
     }
+
+@app.get("/papers")
+def get_papers_by_category(category: str = None):
+    conn = sqlite3.connect('papers.db')
+    cursor = conn.cursor()
+    
+    if category:
+        cursor.execute(
+            'SELECT id, title, abstract, authors, url, category FROM papers WHERE category = ? LIMIT 50',
+            (category,)
+        )
+    else:
+        cursor.execute(
+            'SELECT id, title, abstract, authors, url, category FROM papers LIMIT 50'
+        )
+    
+    rows = cursor.fetchall()
+    conn.close()
+    
+    return {
+        "papers": [
+            {
+                "id": row[0],
+                "title": row[1],
+                "abstract": row[2],
+                "url": row[4],
+                "category": row[5]
+            }
+            for row in rows
+        ]
+    }
