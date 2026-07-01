@@ -2,3 +2,6 @@ backend/venv/
 backend/papers.db
 backend/__pycache__/
 frontend/node_modules/
+*.npy
+*.pkl
+papers_meta.json

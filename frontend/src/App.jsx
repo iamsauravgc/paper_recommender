@@ -55,7 +55,8 @@ export default function App() {
     setError(null)
     setResult(null)
     try {
-      const res = await axios.post("http://localhost:8000/recommend", { url })
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
+      const res = await axios.post(`${API_URL}/recommend`, { url })
       setResult(res.data)
     } catch (err) {
       const status = err.response?.status
