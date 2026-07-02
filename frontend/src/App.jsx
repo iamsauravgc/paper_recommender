@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { AuthProvider } from "./AuthProvider.jsx"
 import Header from "./components/Header.jsx"
-import ProtectedRoute from "./ProtectedRoute.jsx"
+
 import Home from "./pages/Home.jsx"
 import Browse from "./pages/Browse.jsx"
 import PaperDetail from "./pages/PaperDetail.jsx"
@@ -25,7 +25,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/browse" element={<Browse />} />
             <Route path="/paper/:id" element={<PaperDetail />} />
-            <Route path="/saved" element={<ProtectedRoute><Saved /></ProtectedRoute>} />
+            <Route path="/saved" element={<Saved />} />
           </Routes>
         </Layout>
       </AuthProvider>

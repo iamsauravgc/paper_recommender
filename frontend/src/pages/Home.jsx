@@ -17,11 +17,23 @@ export default function Home() {
   })
   const [activeCategory, setActiveCategory] = useState(null)
 
-  function toggleSave(paper) {
+  async function toggleSave(paper) {
     const exists = savedPapers.find((p) => p.url === paper.url)
     const updated = exists
       ? savedPapers.filter((p) => p.url !== paper.url)
       : [...savedPapers, paper]
+
+    try {
+      if (exists) {
+        await api.delete(`/bookmarks/${encodeURIComponent(paper.url)}`)
+      } else {
+        await api.post("/bookmarks", {
+          url: paper.url, title: paper.title,
+          abstract: paper.abstract, category: paper.category,
+        })
+      }
+    } catch { /* not logged in — localStorage fallback is fine */ }
+
     setSavedPapers(updated)
     localStorage.setItem("savedPapers", JSON.stringify(updated))
   }
