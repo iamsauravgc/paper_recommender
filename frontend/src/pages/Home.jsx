@@ -67,6 +67,8 @@ export default function Home() {
     (p) => !activeCategory || p.category === activeCategory
   )
 
+  const inputPaper = result ? { url, title: result.input_paper.title, abstract: result.input_paper.abstract } : null
+
   return (
     <div>
       {!result && (
@@ -82,7 +84,22 @@ export default function Home() {
         <div className="w-full">
           <div className="border border-gray-100 dark:border-gray-800 rounded-lg p-5 mb-6 bg-gray-50 dark:bg-gray-900 transition-colors">
             <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Input Paper</p>
-            <h2 className="text-base font-semibold leading-snug dark:text-gray-100">{result.input_paper.title}</h2>
+            <h2 className="text-base font-semibold leading-snug dark:text-gray-100 mb-3">{result.input_paper.title}</h2>
+            <div className="flex items-center gap-3">
+              <a href={url} target="_blank" className="text-xs text-gray-900 dark:text-gray-300 font-medium hover:underline">
+                View on ArXiv →
+              </a>
+              <button
+                onClick={() => toggleSave(inputPaper)}
+                className={`text-xs font-medium px-3 py-1 rounded-full border transition-colors ${
+                  isSaved(inputPaper)
+                    ? "text-green-600 dark:text-green-400 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/30"
+                    : "text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500"
+                }`}
+              >
+                {isSaved(inputPaper) ? "✓ Saved" : "+ Save"}
+              </button>
+            </div>
           </div>
 
           <FilterPills activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
