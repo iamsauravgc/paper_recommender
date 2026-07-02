@@ -1,7 +1,22 @@
+# Python
 backend/venv/
-backend/papers.db
-backend/__pycache__/
-frontend/node_modules/
+__pycache__/
+*.pyc
+*.pyo
 *.npy
 *.pkl
 papers_meta.json
+backend/papers.db
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Env
+.env
+backend/.env
+frontend/.env
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,8 +1,14 @@
+import { Link } from "react-router-dom"
+
 export default function PaperCard({ paper, isSaved, onToggleSave }) {
+  const paperId = paper.url?.split("/").pop() || ""
+
   return (
     <div className="py-5 transition-opacity duration-300">
       <div className="flex justify-between items-start gap-4 mb-2">
-        <h3 className="text-sm font-semibold leading-snug dark:text-white">{paper.title}</h3>
+        <Link to={`/paper/${paperId}`} className="text-sm font-semibold leading-snug dark:text-white hover:underline">
+          {paper.title}
+        </Link>
         <span className="text-xs text-gray-400 dark:text-gray-500 shrink-0 mt-0.5">
           {(paper.score * 100).toFixed(0)}% match
         </span>

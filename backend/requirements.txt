@@ -1,9 +1,10 @@
 fastapi>=0.110.0
 uvicorn>=0.29.0
 sentence-transformers>=3.0.0
-scikit-learn>=1.5.0
 arxiv>=4.0.0
 numpy>=1.26.0
 rank-bm25>=0.2.0
 APScheduler>=3.10.0
 slowapi>=0.1.9
+PyJWT>=2.0.0
+python-dotenv>=1.0.0
