@@ -96,11 +96,13 @@ scheduler = BackgroundScheduler()
 @asynccontextmanager
 async def lifespan(app):
     init_user_tables()
-    from ingest import run_ingestion
-    scheduler.add_job(run_ingestion, "interval", hours=24)
-    scheduler.start()
+    if os.getenv("ENABLE_SCHEDULER", "").lower() == "true":
+        from ingest import run_ingestion
+        scheduler.add_job(run_ingestion, "interval", hours=24)
+        scheduler.start()
     yield
-    scheduler.shutdown()
+    if scheduler.running:
+        scheduler.shutdown()
 
 app = FastAPI(lifespan=lifespan)
 
