@@ -1,10 +1,11 @@
 import os
 import sys
+from pathlib import Path
 import jwt
 from jwt import PyJWKClient
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).parent / ".env")
 
 PROJECT_ID = os.getenv("FIREBASE_PROJECT_ID")
 PROJECT_NUMBER = os.getenv("FIREBASE_PROJECT_NUMBER", "")
