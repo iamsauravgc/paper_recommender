@@ -46,6 +46,7 @@ export default function Home() {
     if (status === 400) return { message: "Invalid URL. Please paste a valid ArXiv link.", type: "error" }
     if (status === 404) return { message: "Paper not found on ArXiv. Check the URL.", type: "error" }
     if (status === 502) return { message: "ArXiv API unavailable. Try again later.", type: "warning" }
+    if (status === 503) return { message: "Paper index not ready. Try again in a moment.", type: "warning" }
     return { message: "Something went wrong. Check the URL.", type: "error" }
   }
 

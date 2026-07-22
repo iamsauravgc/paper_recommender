@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import pickle
 import re
@@ -15,7 +16,11 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+from cachetools import TTLCache
 from auth import verify_token, require_user
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 EMBEDDINGS_PATH = "embeddings.npy"
 META_PATH = "papers_meta.json"
@@ -23,6 +28,9 @@ BM25_PATH = "bm25.pkl"
 ADMIN_API_KEY = os.getenv("ADMIN_API_KEY", "")
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
+
+arxiv_client = arxiv.Client()
+paper_cache = TTLCache(maxsize=128, ttl=300)
 
 embeddings = None
 papers_meta = None
@@ -158,14 +166,22 @@ def recommend(request: Request, payload: dict):
         raise HTTPException(status_code=400, detail="Invalid URL. Must be a valid ArXiv URL.")
 
     try:
-        paper_id = arxiv_url.split("/")[-1]
-        client = arxiv.Client()
-        search = arxiv.Search(id_list=[paper_id])
-        paper = next(client.results(search))
+        paper_id = parsed.path.rstrip("/").split("/")[-1]
+        if paper_id.endswith(".pdf"):
+            paper_id = paper_id[:-4]
+
+        if paper_id in paper_cache:
+            paper = paper_cache[paper_id]
+        else:
+            search = arxiv.Search(id_list=[paper_id])
+            paper = next(arxiv_client.results(search))
+            paper_cache[paper_id] = paper
+
         abstract = paper.summary.replace("\n", " ")
     except StopIteration:
         raise HTTPException(status_code=404, detail="Paper not found on ArXiv.")
-    except Exception:
+    except Exception as e:
+        logger.exception("Failed to fetch paper from ArXiv: %s", e)
         raise HTTPException(status_code=502, detail="ArXiv API is temporarily unavailable.")
 
     if embeddings is None or papers_meta is None:
